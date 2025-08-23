@@ -1,0 +1,30 @@
+﻿Character Controls
+Room.GenerateRoom()
+Interactable.Item
+
+input handler:
+what state:
+PlayerAction
+    can move, open inventory or menus, attack
+    after finishing player action - enemy moves
+    
+MenuActions
+    block player actions, and wait for menu commands
+    
+Info
+    block all actions but spacebar
+    
+    
+From room you can go up to up the difficulty, or sideways to stay on same diff to lvlup, or go down
+Structure is pyramid like - you start from lower levels, easier, more horizontal levels
+As you go higher enemeis are stronger, and you have less rooms in horizontal
+Top room is final room
+
+            []
+        []  []  []
+    []  []  []  []  []
+[]  []  []  []  []  []  []
+
+Colors!!
+
+AttackEnemyMelee() @Gameplay.cs

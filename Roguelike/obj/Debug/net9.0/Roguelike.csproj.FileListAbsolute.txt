@@ -1,0 +1,14 @@
+D:\IntroC#\FinalProject\Roguelike\Roguelike\bin\Debug\net9.0\Roguelike.exe
+D:\IntroC#\FinalProject\Roguelike\Roguelike\bin\Debug\net9.0\Roguelike.deps.json
+D:\IntroC#\FinalProject\Roguelike\Roguelike\bin\Debug\net9.0\Roguelike.runtimeconfig.json
+D:\IntroC#\FinalProject\Roguelike\Roguelike\bin\Debug\net9.0\Roguelike.dll
+D:\IntroC#\FinalProject\Roguelike\Roguelike\bin\Debug\net9.0\Roguelike.pdb
+D:\IntroC#\FinalProject\Roguelike\Roguelike\obj\Debug\net9.0\Roguelike.GeneratedMSBuildEditorConfig.editorconfig
+D:\IntroC#\FinalProject\Roguelike\Roguelike\obj\Debug\net9.0\Roguelike.AssemblyInfoInputs.cache
+D:\IntroC#\FinalProject\Roguelike\Roguelike\obj\Debug\net9.0\Roguelike.AssemblyInfo.cs
+D:\IntroC#\FinalProject\Roguelike\Roguelike\obj\Debug\net9.0\Roguelike.csproj.CoreCompileInputs.cache
+D:\IntroC#\FinalProject\Roguelike\Roguelike\obj\Debug\net9.0\Roguelike.dll
+D:\IntroC#\FinalProject\Roguelike\Roguelike\obj\Debug\net9.0\refint\Roguelike.dll
+D:\IntroC#\FinalProject\Roguelike\Roguelike\obj\Debug\net9.0\Roguelike.pdb
+D:\IntroC#\FinalProject\Roguelike\Roguelike\obj\Debug\net9.0\Roguelike.genruntimeconfig.cache
+D:\IntroC#\FinalProject\Roguelike\Roguelike\obj\Debug\net9.0\ref\Roguelike.dll
