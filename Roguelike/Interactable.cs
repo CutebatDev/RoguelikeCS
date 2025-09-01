@@ -13,8 +13,7 @@ public enum NpcStates
 public enum ItemType
 {
     Coin,
-    Weapon,
-    Potion,
+    InvenoryItem,
     Lever
 }
 
@@ -24,20 +23,21 @@ public class Item(int[] position, ItemType type)
 {
     public int[] Position {get; private set;} = position;
     public ItemType Type {get; private set;} = type;
+    public ConsumableType? Consumable {get; private set;} = null;
 
+    
     public void Interact(Character player)
     {
         // do switch case here
     }
 }
 
-public class Character(int[] position, bool isPlayer, bool ranged, NpcStates state)
+public class Character(int[] position, bool isPlayer,  NpcStates state)
 {
     public int[] Position {get; set;} = position;
     public int Health { get; private set; } = 5;
     public int Damage { get; private set; } = 1;
     public bool IsPlayer { get; private set; } = isPlayer;
-    public bool Ranged {get; private set;} = ranged;
     public NpcStates State {get; private set;} = state;
 
 

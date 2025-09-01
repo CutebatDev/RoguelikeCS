@@ -20,9 +20,21 @@ public static class Gameplay
             case GameState.PlayerAction:
                 if(keyInfo.Key is ConsoleKey.W or ConsoleKey.A or ConsoleKey.S or ConsoleKey.D)
                     PlayerDirectionalInput(keyInfo.Key);
+                if (keyInfo.Key is ConsoleKey.I)
+                    CurrentGameState = GameState.MenuActions;
                 break;
+            
             case GameState.MenuActions:
+                if (keyInfo.Key is ConsoleKey.W)
+                    Inventory.MovePointer(-1);
+                else if (keyInfo.Key is ConsoleKey.S)
+                    Inventory.MovePointer(1);
+                else if (keyInfo.Key is ConsoleKey.Enter)
+                    Inventory.UseAtPointer();
+                else if (keyInfo.Key is ConsoleKey.Spacebar)
+                    CurrentGameState = GameState.Info;
                 break;
+            
             case GameState.Info:
                 if (keyInfo.Key == ConsoleKey.Spacebar)
                     CurrentGameState = GameState.PlayerAction;
@@ -101,7 +113,7 @@ public static class Gameplay
             CurrentRoom.AddCharacter(Player.Char);
         }
     }
-
+    
     private static int HasEnemy(int cellIndex) // -1 - out of bounds, 0 - no enemy, 1 - enemy
     {
         if(CurrentRoom != null && CurrentRoom.RoomContents.ContainsKey(cellIndex))

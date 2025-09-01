@@ -90,7 +90,12 @@ public class Room
             Console.WriteLine(RoomContents[index].CellCharacter);
             if (RoomContents[index].CellCharacter == null)
             {
-                Character newEnemy = new Character(RoomContents[index].Position, false, false, NpcStates.Idle);
+                // if (i == 5)
+                // {
+                //     AddItem(new Item(RoomContents[index].Position, ItemType.InvenoryItem));
+                //     return;
+                // }
+                Character newEnemy = new Character(RoomContents[index].Position, false, NpcStates.Idle);
                 AddCharacter(newEnemy);
             }
         }

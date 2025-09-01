@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\IntroC#\\FinalProject\\Roguelike\\Roguelike\\Roguelike.csproj": {}
+    "D:\\CS_Intro\\FinalProject\\Roguelike\\Roguelike\\Roguelike.csproj": {}
   },
   "projects": {
-    "D:\\IntroC#\\FinalProject\\Roguelike\\Roguelike\\Roguelike.csproj": {
+    "D:\\CS_Intro\\FinalProject\\Roguelike\\Roguelike\\Roguelike.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\IntroC#\\FinalProject\\Roguelike\\Roguelike\\Roguelike.csproj",
+        "projectUniqueName": "D:\\CS_Intro\\FinalProject\\Roguelike\\Roguelike\\Roguelike.csproj",
         "projectName": "Roguelike",
-        "projectPath": "D:\\IntroC#\\FinalProject\\Roguelike\\Roguelike\\Roguelike.csproj",
+        "projectPath": "D:\\CS_Intro\\FinalProject\\Roguelike\\Roguelike\\Roguelike.csproj",
         "packagesPath": "C:\\Users\\alexa\\.nuget\\packages\\",
-        "outputPath": "D:\\IntroC#\\FinalProject\\Roguelike\\Roguelike\\obj\\",
+        "outputPath": "D:\\CS_Intro\\FinalProject\\Roguelike\\Roguelike\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

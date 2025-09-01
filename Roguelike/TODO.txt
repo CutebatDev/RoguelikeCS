@@ -28,3 +28,4 @@ Top room is final room
 Colors!!
 
 AttackEnemyMelee() @Gameplay.cs
+Add item to room generator to check inventory

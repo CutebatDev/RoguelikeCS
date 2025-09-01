@@ -72,13 +72,22 @@ static class Graphics
         Console.Clear();
         Console.WriteLine("Status"); // ADD STATUS HERE
         int index = 0;
-        foreach (char value in _screen)
+
+
+        if (Gameplay.CurrentGameState != GameState.MenuActions)
         {
-            Console.Write($"{value}  ");
-            index++;
-            
-            if (index % ScreenWidth == 0)
-                Console.WriteLine();
+            foreach (char value in _screen)
+            {
+                Console.Write($"{value}  ");
+                index++;
+
+                if (index % ScreenWidth == 0)
+                    Console.WriteLine();
+            }
+        }
+        else
+        {
+            Inventory.PrintInventory();
         }
 
         switch (Gameplay.CurrentGameState)
