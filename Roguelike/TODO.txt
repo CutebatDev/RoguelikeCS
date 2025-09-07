@@ -20,12 +20,30 @@ Structure is pyramid like - you start from lower levels, easier, more horizontal
 As you go higher enemeis are stronger, and you have less rooms in horizontal
 Top room is final room
 
-            []
-        []  []  []
-    []  []  []  []  []
-[]  []  []  []  []  []  []
+0                                       [].lenght-1
+                  [ ] 
+                    
+            [ ]   [ ]   [ ] 
+          
+      [ ]   [ ]   [ ]   [ ]   [ ] 
+                                      
+[ ]   [@]   [ ]   [ ]   [ ]   [ ]   [ ]  
+.lenght-1
 
 Colors!!
 
 AttackEnemyMelee() @Gameplay.cs
-Add item to room generator to check inventory
+
+make opening inventory a function maybe
+Set next message
+Info and status as text system
+
+Staff makes you invulnerable for one attack
+move "Item used" text to "Use" function
+
+Save rooms
+Block corner room exits
+Generate random item
+EXP and levels
+Map
+Dagger consumable

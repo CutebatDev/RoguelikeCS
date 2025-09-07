@@ -36,7 +36,7 @@ public class Character(int[] position, bool isPlayer,  NpcStates state)
 {
     public int[] Position {get; set;} = position;
     public int Health { get; private set; } = 5;
-    public int Damage { get; private set; } = 1;
+    public int Damage { get; private set; } = 2;
     public bool IsPlayer { get; private set; } = isPlayer;
     public NpcStates State {get; private set;} = state;
 

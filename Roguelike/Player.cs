@@ -2,9 +2,20 @@
 
 public static class Player
 {
-    public static Character Char = new Character([0, 0], true,  NpcStates.Player);
-    
-    
+    public static Character Char = new Character([(Graphics.ScreenHeight - 2)/2, (Graphics.ScreenWidth - 2)/2], true,  NpcStates.Player);
+    public static int Health = 10;
+    public static int MaxHealth = 20;
+    public static bool Invulnerable = false;
+
+    public static void ChangeHealth(int change)
+    {
+        if (Invulnerable && change < 0)
+        {
+            Invulnerable = false;
+            return;
+        }
+        Health = Math.Clamp(Health + change, 0, MaxHealth);
+    }
 }
 public static class Inventory
 {
@@ -12,6 +23,8 @@ public static class Inventory
     public static int pointer = 0;
     public static void UseAtPointer()
     {
+        if(Contents.Count < 1)
+            return;
         Contents[pointer].Use();
         Contents.RemoveAt(pointer);
     }
@@ -26,6 +39,9 @@ public static class Inventory
 
     public static void MovePointer(int direction) // -1 : up, 1 : down
     {
+        if(Contents.Count < 1)
+            return;
+        Console.WriteLine(Contents.Count);
         pointer = Math.Clamp((pointer + direction), 0, Contents.Count - 1);
     }
 
@@ -44,11 +60,7 @@ public static class Inventory
     }
 }
 
-public enum ConsumableType
-{
-    Potion,
-    Staff
-}
+
 public class InventoryItem
 {
     public ConsumableType Type;
@@ -67,11 +79,22 @@ public class InventoryItem
     {
         if (Type == ConsumableType.Potion)
         {
-            //player.Heal();
+            Player.ChangeHealth(5);
         }
-        else if (Type == ConsumableType.Staff)
+        else if (Type == ConsumableType.Shield)
         {
-            //player.CastSpell();
+            Player.Invulnerable = true;
+        }
+        else if (Type == ConsumableType.Dagger)
+        {
+            // throw dagger
         }
     }
+}
+
+public enum ConsumableType
+{
+    Potion,
+    Shield,
+    Dagger
 }

@@ -9,6 +9,9 @@ static class Graphics
     // changing those 2 values shouldn't break anything, but you will get bigger map! maybe could be used to make different rooms 🤔
     public const int ScreenWidth = 17;
     public const int ScreenHeight = 9;
+
+    public static string InfoText = "Welcome to the Roguelike! Press Space to start playing";
+    public static string? InfoOneshot = null;
     
     private static readonly Dictionary<string, char> GraphicsChar = new Dictionary<string, char>()
     {
@@ -70,7 +73,15 @@ static class Graphics
     public static void DrawScreen()
     {
         Console.Clear();
-        Console.WriteLine("Status"); // ADD STATUS HERE
+        Console.Write("Health : |"); // ADD STATUS HERE
+        for (int i = 0; i < Player.MaxHealth; i++)
+        {
+            if(i < Player.Health)
+                Console.Write("#");
+            else
+                Console.Write(" ");
+        }
+        Console.WriteLine("|");
         int index = 0;
 
 
@@ -89,18 +100,7 @@ static class Graphics
         {
             Inventory.PrintInventory();
         }
-
-        switch (Gameplay.CurrentGameState)
-        {
-            case GameState.Info:
-                Console.WriteLine("Info");
-                break;
-            case GameState.MenuActions:
-                Console.WriteLine("Menu");
-                break;
-            case GameState.PlayerAction:
-                Console.WriteLine("Player Action");
-                break;
-        }
+        Console.WriteLine(InfoOneshot ?? InfoText);
+        InfoOneshot = null;
     }
 }

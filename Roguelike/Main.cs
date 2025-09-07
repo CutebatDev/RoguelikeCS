@@ -5,17 +5,14 @@ class MainClass {
     {
         Graphics.InitScreen();
         
-        Inventory.Contents.Add(new InventoryItem(ConsumableType.Potion));
-        Inventory.Contents.Add(new InventoryItem(ConsumableType.Potion));
-        Inventory.Contents.Add(new InventoryItem(ConsumableType.Potion));
+        Gameplay.CurrentDungeon = new Dungeon();;
+        Gameplay.CurrentDungeon.CurrentRoom.AddCharacter(Player.Char);
         
-        Room room1 = new Room();
-        Gameplay.CurrentRoom = room1;
-        Graphics.UpdateScreen(room1);
+        Graphics.UpdateScreen(Gameplay.CurrentDungeon.CurrentRoom);
         Graphics.DrawScreen();
         while (true)
         {
-            Graphics.UpdateScreen(room1);
+            Graphics.UpdateScreen(Gameplay.CurrentDungeon.CurrentRoom);
             Graphics.DrawScreen();
             Gameplay.Input(Console.ReadKey());
         }
