@@ -23,19 +23,13 @@ public static class Gameplay
                 if (keyInfo.Key is ConsoleKey.I)
                     ChangeGameState(GameState.MenuActions);
                 if (keyInfo.Key is ConsoleKey.Spacebar)
-                    PlayerInteractUnput();
+                    PlayerInteractInput();
                 break;
             
             case GameState.MenuActions:
-                if (keyInfo.Key is ConsoleKey.W)
-                    Inventory.MovePointer(-1);
-                else if (keyInfo.Key is ConsoleKey.S)
-                    Inventory.MovePointer(1);
-                else if (keyInfo.Key is ConsoleKey.Enter){
-                    Inventory.UseAtPointer();
-                    Graphics.InfoOneshot = "Item used!";
-                }
-                else if (keyInfo.Key is ConsoleKey.Spacebar)
+                if(keyInfo.Key is not ConsoleKey.Spacebar)
+                    Menu.Input(keyInfo);
+                else
                     ChangeGameState(GameState.Info);
                 break;
             
@@ -109,7 +103,7 @@ public static class Gameplay
         }
     }
 
-    private static void PlayerInteractUnput()
+    private static void PlayerInteractInput()
     {
         if (CurrentDungeon.CurrentRoom != null)
         {

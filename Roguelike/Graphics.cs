@@ -73,10 +73,11 @@ static class Graphics
     public static void DrawScreen()
     {
         Console.Clear();
-        Console.Write("Health : |"); // ADD STATUS HERE
-        for (int i = 0; i < Player.MaxHealth; i++)
+        Console.Write("Health :");
+        Console.Write("|");
+        for (int i = 0; i < Player.Char.MaxHealth; i++)
         {
-            if(i < Player.Health)
+            if(i < Player.Char.Health)
                 Console.Write("#");
             else
                 Console.Write(" ");
@@ -98,7 +99,7 @@ static class Graphics
         }
         else
         {
-            Inventory.PrintInventory();
+            Menu.PrintMenu();
         }
         Console.WriteLine(InfoOneshot ?? InfoText);
         InfoOneshot = null;

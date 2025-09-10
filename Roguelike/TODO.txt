@@ -22,22 +22,16 @@ Map       : draws map of the dungeon that shows character, lever
 
 .lenght-1
 
+TODO:
+
 Colors!!
-
 AttackEnemyMelee() @Gameplay.cs
-
 make opening inventory a function maybe (?)
 Info and status as text system
-
-move "Item used" text to "Use" function
-
 Block corner room exits visually
 Generate random item
 EXP and levels !
-Map
 Dagger consumable
-Player body stays in old room after moving to next one
-
 Enemies higher in dungeon are stronger
 Reasons to engage in combat
 How to finish a game?

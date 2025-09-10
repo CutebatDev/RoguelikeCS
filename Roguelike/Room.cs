@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Roguelike;
+﻿namespace Roguelike;
 
 public enum Direction
 {
@@ -9,7 +7,6 @@ public enum Direction
     Left,
     Right
 }
-
 
 public class Cell
 {
@@ -141,7 +138,7 @@ public class Room
 public class Dungeon
 {
     private int floors = 4;
-    Room[][] DungeonRooms; // [floor][room]
+    public Room[][] DungeonRooms; // [floor][room]
     public Room CurrentRoom;
     public int[] RoomPos;
     public int FloorAccess;
@@ -184,7 +181,7 @@ public class Dungeon
                 {
                     RoomPos[0]--;
                     RoomPos[1]--;
-                    CurrentRoom = DungeonRooms[RoomPos[0]][RoomPos[1]];
+                    ChangeCurrentRoom(RoomPos[0], RoomPos[1]);
                     return true;
                 }
                 break;
@@ -195,7 +192,7 @@ public class Dungeon
                 {
                     RoomPos[0]++;
                     RoomPos[1]++;
-                    CurrentRoom = DungeonRooms[RoomPos[0]][RoomPos[1]];
+                    ChangeCurrentRoom(RoomPos[0], RoomPos[1]);
                     return true;
                 }
                 break;
@@ -205,7 +202,7 @@ public class Dungeon
                 if (RoomPos[1] != 0)
                 {
                     RoomPos[1]--;
-                    CurrentRoom = DungeonRooms[RoomPos[0]][RoomPos[1]];
+                    ChangeCurrentRoom(RoomPos[0], RoomPos[1]);
                     return true;
                 }
                 break;
@@ -215,13 +212,19 @@ public class Dungeon
                 if (RoomPos[1] != DungeonRooms[RoomPos[0]].Length - 1)
                 {
                     RoomPos[1]++;
-                    CurrentRoom = DungeonRooms[RoomPos[0]][RoomPos[1]];
+                    ChangeCurrentRoom(RoomPos[0], RoomPos[1]);
                     return true;
                 }
                 break;
             }
         }
         return false;
+    }
+
+    private void ChangeCurrentRoom(int floor, int room)
+    {
+        CurrentRoom.RemoveCharacterAt(Player.Char.Position);
+        CurrentRoom = DungeonRooms[floor][room];
     }
 }
 

@@ -58,11 +58,16 @@ public class Item(int[] position, ItemType type)
     }
 }
 
-public class Character(int[] position, bool isPlayer,  NpcStates state)
+public class Character(int[] position, bool isPlayer = false, NpcStates state = NpcStates.Idle,
+    int maxHealth = 5, int health = 5, int damage = 2, int hitRate = 5, int defence = 0)
 {
     public int[] Position {get; set;} = position;
-    public int Health { get; private set; } = 5;
-    public int Damage { get; private set; } = 2;
+    
+    public int MaxHealth { get; set; } = maxHealth;
+    public int Health { get; set; } = health;
+    public int Damage { get; set; } = damage;
+    public int HitRate { get; set; } = hitRate;
+    public int Defence { get; set; } = defence;
     public bool IsPlayer { get; private set; } = isPlayer;
     public NpcStates State {get; private set;} = state;
 
