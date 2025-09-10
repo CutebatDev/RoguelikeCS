@@ -65,14 +65,9 @@ public class InventoryItem
 {
     public ConsumableType Type;
 
-    public InventoryItem(ConsumableType type)
+    public InventoryItem(ConsumableType type = ConsumableType.Potion)
     {
         Type = type;
-    }
-
-    public InventoryItem()
-    {
-        Type = ConsumableType.Potion;
     }
 
     public void Use()

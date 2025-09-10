@@ -1,24 +1,15 @@
-﻿Character Controls
-Room.GenerateRoom()
-Interactable.Item
-
-input handler:
-what state:
-PlayerAction
-    can move, open inventory or menus, attack
-    after finishing player action - enemy moves
-    
-MenuActions
-    block player actions, and wait for menu commands
-    
-Info
-    block all actions but spacebar
-    
-    
-From room you can go up to up the difficulty, or sideways to stay on same diff to lvlup, or go down
+﻿From room you can go up to up the difficulty, or sideways to stay on same diff to lvlup, or go down
 Structure is pyramid like - you start from lower levels, easier, more horizontal levels
 As you go higher enemeis are stronger, and you have less rooms in horizontal
 Top room is final room
+
+
+Menu tabs:
+[Inventory] [Character] [Map]
+Inventory : list of items
+Character : list of equipped items and parameters
+Map       : draws map of the dungeon that shows character, lever
+
 
 0                                       [].lenght-1
                   [ ] 
@@ -28,22 +19,26 @@ Top room is final room
       [ ]   [ ]   [ ]   [ ]   [ ] 
                                       
 [ ]   [@]   [ ]   [ ]   [ ]   [ ]   [ ]  
+
 .lenght-1
 
 Colors!!
 
 AttackEnemyMelee() @Gameplay.cs
 
-make opening inventory a function maybe
-Set next message
+make opening inventory a function maybe (?)
 Info and status as text system
 
-Staff makes you invulnerable for one attack
 move "Item used" text to "Use" function
 
-Save rooms
-Block corner room exits
+Block corner room exits visually
 Generate random item
-EXP and levels
+EXP and levels !
 Map
 Dagger consumable
+Player body stays in old room after moving to next one
+
+Enemies higher in dungeon are stronger
+Reasons to engage in combat
+How to finish a game?
+

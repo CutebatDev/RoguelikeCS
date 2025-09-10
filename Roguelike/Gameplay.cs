@@ -65,7 +65,7 @@ public static class Gameplay
             // Try Move
             int index = RoomExtension.ArrayToIndex(Player.Char.Position);
             int[] playerPos = Player.Char.Position;
-            CurrentDungeon.CurrentRoom.RoomContents[index].CellCharacter = null;
+            CurrentDungeon.CurrentRoom.RemoveCharacterAt(index);
 
             int targetCellIndex;
             int targetCellContent;
@@ -114,21 +114,16 @@ public static class Gameplay
         if (CurrentDungeon.CurrentRoom != null)
         {
             int index = RoomExtension.ArrayToIndex(Player.Char.Position);
-            if (CurrentDungeon.CurrentRoom.RoomContents[index].CellItem != null){
-                Inventory.AddItem(CurrentDungeon.CurrentRoom.RoomContents[index].CellItem);
-                CurrentDungeon.CurrentRoom.RoomContents[index].CellItem = null;
-                Graphics.InfoOneshot = "Item picked up!";
-            }
+            if (CurrentDungeon.CurrentRoom.RoomContents[index].CellItem != null)
+                CurrentDungeon.CurrentRoom.RoomContents[index].CellItem.Interact();
             else
             {
                 if (CurrentDungeon.CurrentRoom.RoomContents[index].isExit)
                 {
-                    
                     int[] pPos = Player.Char.Position;
                     if(pPos[0] == 0){
                         if (CurrentDungeon.Move(Direction.Up))
                             pPos[0] = Graphics.ScreenHeight-3;
-                            
                     }
                     else if (pPos[0] == Graphics.ScreenHeight-3)
                     {
@@ -160,17 +155,19 @@ public static class Gameplay
                 return 0;
             else
             {
-                CurrentDungeon.CurrentRoom.RoomContents[cellIndex].CellCharacter = null; // ATTACK ENEMY
-                AttackEnemyMelee();
+                AttackEnemyMelee(cellIndex);
                 return 1;
             }
         return -1;
     }
 
-    private static void AttackEnemyMelee()
+    private static void AttackEnemyMelee(int cellIndex)
     {
-        // STUMP
-        Graphics.InfoOneshot = "Enemy defeated! -2hp";
-        Player.ChangeHealth(-2);
+        if(CurrentDungeon.CurrentRoom.RoomContents[cellIndex].CellCharacter != null)
+        {
+            CurrentDungeon.CurrentRoom.RemoveCharacterAt(cellIndex);
+            Graphics.InfoOneshot = "Enemy defeated! -2hp";
+            Player.ChangeHealth(-2);
+        }
     }
 }

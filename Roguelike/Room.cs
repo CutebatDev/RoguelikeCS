@@ -10,6 +10,7 @@ public enum Direction
     Right
 }
 
+
 public class Cell
 {
     public int[] Position = new int[2];
@@ -17,6 +18,11 @@ public class Cell
     public Character? CellCharacter = null;
     public bool isExit = false;
 
+    private enum CellContent
+    {
+        Item,
+        Character
+    }
     public Cell(int x, int y)
     {
         Position = [x, y];
@@ -26,12 +32,7 @@ public class Cell
             isExit = true;
         }
     }
-    private enum CellContent
-    {
-        Item = 0,
-        Character = 1
-    }
-
+    
     public bool AddItem(Item addition)
     {
         if (CellItem == null)
@@ -62,9 +63,10 @@ public class Cell
 public class Room
 {
     public Dictionary<int, Cell> RoomContents = new Dictionary<int, Cell>(); 
-    public Room()
+    public List<Character> Enemies = new List<Character>();
+    public Room(bool lever = false, int enemies = 5, int items = 1)
     {
-        RegenerateRoom();
+        RegenerateRoom(lever, enemies, items);
     }
 
     public void AddItem(Item addition)
@@ -76,6 +78,27 @@ public class Room
     {
         int[] pos = [addition.Position[0], addition.Position[1]];
         RoomContents[RoomExtension.ArrayToIndex(pos)].AddCharacter(addition);
+        if(!addition.IsPlayer)
+            Enemies.Add(addition);
+    }
+
+    public void RemoveCharacterAt(int[] pos)
+    {
+        int index = RoomExtension.ArrayToIndex(pos);
+        
+        var cellCharacter = RoomContents[index].CellCharacter;
+        if (cellCharacter != null && !cellCharacter.IsPlayer)
+            Enemies.Remove(RoomContents[index].CellCharacter);
+        
+        RoomContents[index].CellCharacter = null;
+    }
+    public void RemoveCharacterAt(int index)
+    {
+        var cellCharacter = RoomContents[index].CellCharacter;
+        if (cellCharacter != null && !cellCharacter.IsPlayer)
+            Enemies.Remove(RoomContents[index].CellCharacter);
+        
+        RoomContents[index].CellCharacter = null;
     }
 
     private void CreateEmptyRoom()
@@ -86,28 +109,32 @@ public class Room
             RoomContents.Add(RoomExtension.ArrayToIndex([j, i]), new Cell(j, i));
     }
 
-    public void RegenerateRoom()
+    public void RegenerateRoom(bool lever = false, int enemies = 5, int items = 1) // default values for rooms
     {
         RoomContents.Clear();
         CreateEmptyRoom();
         
-        // Populate room with up to 5 enemies at random places
+        for(int i  = 0; i < enemies; i++)
+            AddCharacter(new Character(RandomFreePosition(), false, NpcStates.Idle));
+        for(int i  = 0; i < items; i++)
+            AddItem(new Item(RandomFreePosition(), ItemType.InvenoryItem));
+        if(lever)
+            AddItem(new Item(RandomFreePosition(), ItemType.Lever));
+    }
+
+    private int[] RandomFreePosition()
+    {
         Random rand = new Random();
         int index = 0;
-        Item item = new Item([1, 1], ItemType.InvenoryItem);
-        AddItem(item);
-        for (int i = 0; i < 5; i++)
-        {
+        bool isTaken = true;
+        while (isTaken){
             do
                 index = (int)rand.NextInt64(0, RoomContents.Count - 1);
             while (!RoomContents.ContainsKey(index));
-            Console.WriteLine(RoomContents[index].CellCharacter);
-            if (RoomContents[index].CellCharacter == null)
-            {
-                Character newEnemy = new Character(RoomContents[index].Position, false, NpcStates.Idle);
-                AddCharacter(newEnemy);
-            }
+            if (RoomContents[index].IsEmpty())
+                isTaken = false;
         }
+        return RoomContents[index].Position;
     }
 }
 
@@ -117,21 +144,28 @@ public class Dungeon
     Room[][] DungeonRooms; // [floor][room]
     public Room CurrentRoom;
     public int[] RoomPos;
+    public int FloorAccess;
 
     // Constructor creates Dungeon with pyramid layout top-to-bottom
     public Dungeon()
     {
-        // first it creates it in height
+        // first, it creates a dungeon in height
         DungeonRooms = new Room[floors][];
         for (int i = 1; i <= floors; i++)
         {
             // each floor has (2*Number of Floor -1) (counting floors down) rooms (this creates pyramid)
             DungeonRooms[i-1] = new Room[(i * 2) - 1]; 
+            int leverRoom = new Random().Next(0, DungeonRooms[i - 1].Length);
             for (int j = 0; j < DungeonRooms[i-1].Length; j++)
             {
-                DungeonRooms[i-1][j] = new Room();
+                if(j == leverRoom)
+                    DungeonRooms[i-1][j] = new Room(true);
+                else
+                    DungeonRooms[i-1][j] = new Room();
             }
         }
+
+        FloorAccess = floors-1;
 
         RoomPos = [floors - 1, 1];
         CurrentRoom = DungeonRooms[RoomPos[0]][RoomPos[1]];
@@ -143,15 +177,16 @@ public class Dungeon
         {
             case Direction.Up:
             {
+                // check if on a top floor, if in corner rooms and if has access 
                 if (RoomPos[0] != 0 &&
-                    (RoomPos[1] != 0 && RoomPos[1] != DungeonRooms[RoomPos[0]].Length - 1))
+                    (RoomPos[1] != 0 && RoomPos[1] != DungeonRooms[RoomPos[0]].Length - 1) &&
+                    FloorAccess < RoomPos[0])
                 {
                     RoomPos[0]--;
                     RoomPos[1]--;
                     CurrentRoom = DungeonRooms[RoomPos[0]][RoomPos[1]];
                     return true;
                 }
-
                 break;
             }
             case Direction.Down:
@@ -163,7 +198,6 @@ public class Dungeon
                     CurrentRoom = DungeonRooms[RoomPos[0]][RoomPos[1]];
                     return true;
                 }
-                
                 break;
             }
             case Direction.Left:
@@ -174,7 +208,6 @@ public class Dungeon
                     CurrentRoom = DungeonRooms[RoomPos[0]][RoomPos[1]];
                     return true;
                 }
-
                 break;
             }
             case Direction.Right:
@@ -185,20 +218,11 @@ public class Dungeon
                     CurrentRoom = DungeonRooms[RoomPos[0]][RoomPos[1]];
                     return true;
                 }
-
                 break;
             }
         }
         return false;
-        
     }
-
-    // public void ChangeCurrentRoom()
-    // {
-    //     CurrentRoom.RoomContents[RoomExtension.ArrayToIndex(Player.Char.Position)].CellCharacter = null;
-    //     CurrentRoom = DungeonRooms[RoomPos[0]][RoomPos[1]];
-    //     CurrentRoom.RoomContents[RoomExtension.ArrayToIndex(Player.Char.Position)].AddCharacter(Player.Char);
-    // }
 }
 
 public static class RoomExtension
