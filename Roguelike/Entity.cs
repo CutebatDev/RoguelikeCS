@@ -7,23 +7,21 @@ public enum NpcStates
 {
     Player,
     Idle,
-    Aggresive,
-    Dead
+    Follow
 }
 public enum ItemType
 {
-    Coin,
     InvenoryItem,
     Lever
 }
 
 // Classes
 
-public class Item(int[] position, ItemType type)
+public class Item(int[] position, ItemType type, ConsumableType? consumableType = null)
 {
     public int[] Position {get; private set;} = position;
     public ItemType Type {get; private set;} = type;
-    public ConsumableType? Consumable {get; private set;} = null;
+    public ConsumableType? Consumable {get; private set;} = consumableType;
 
     
     public void Interact()
@@ -59,17 +57,35 @@ public class Item(int[] position, ItemType type)
 }
 
 public class Character(int[] position, bool isPlayer = false, NpcStates state = NpcStates.Idle,
-    int maxHealth = 5, int health = 5, int damage = 2, int hitRate = 5, int defence = 0)
+    int maxHealth = 10, int health = 10, int damage = 2, int hitRate = 5, int defence = 0)
 {
     public int[] Position {get; set;} = position;
     
     public int MaxHealth { get; set; } = maxHealth;
     public int Health { get; set; } = health;
     public int Damage { get; set; } = damage;
-    public int HitRate { get; set; } = hitRate;
-    public int Defence { get; set; } = defence;
     public bool IsPlayer { get; private set; } = isPlayer;
     public NpcStates State {get; private set;} = state;
 
+    public void TakeDamage(int dmg)
+    {
+        Health -= dmg;
+        if (Health <= 0)
+        {
+            EnemyDie();
+        }
+    }
+
+    public void EnemyDie()
+    {
+        Room currentRoom = Gameplay.CurrentDungeon.CurrentRoom;
+        currentRoom.RemoveCharacterAt(Position);
+        if(new Random().NextInt64(0,2) == 0)
+        {
+            ConsumableType consType =
+                (ConsumableType)new Random().Next(0, Enum.GetNames(typeof(ConsumableType)).Length);
+            currentRoom.AddItem(new Item(Position, ItemType.InvenoryItem, consType));
+        }
+    }
 
 }

@@ -22,6 +22,15 @@ static class Graphics
         { "Enemy", 'E'  },
         { "Item", '?'  }
     };
+    private static readonly Dictionary<char, ConsoleColor> CharColors = new Dictionary<char, ConsoleColor>()
+    {
+        { '#', ConsoleColor.Gray  },
+        { '.', ConsoleColor.Gray  },
+        { ' ', ConsoleColor.Gray  },
+        { '@', ConsoleColor.Magenta  },
+        { 'E', ConsoleColor.Red  },
+        { '?', ConsoleColor.Yellow  }
+    };
     
     private static char[,] _screen = new char[ScreenHeight, ScreenWidth];
     
@@ -39,6 +48,14 @@ static class Graphics
 
     public static void UpdateScreen(Room room)
     {
+        Dungeon dungeon = Gameplay.CurrentDungeon;
+        
+        int currentFloor = dungeon.RoomPos[0];
+        int currentRoomIndex = dungeon.RoomPos[1];
+        int floorsCount = dungeon.DungeonRooms.Length;
+        int roomsOnFloorCount = dungeon.DungeonRooms[currentFloor].Length;
+
+        
         // Fill contents
         for (int y = 0; y < ScreenHeight; y++)
         {
@@ -48,7 +65,21 @@ static class Graphics
                 
                 // place doors, walls and empty spaces
                 if ((y == ScreenHeight / 2 && (x == 0 || x == ScreenWidth - 1)) ^ ((y == 0 || y == ScreenHeight - 1) && x == ScreenWidth / 2))
-                    _screen[y,x] = GraphicsChar["Door"];
+                {
+                    bool isLeftEdgeOfScreen = x == 0;
+                    bool isRightEdgeOfScreen = x == ScreenWidth - 1;
+                    bool isTopEdgeOfScreen = y == 0;
+                    bool isBottomEdgeOfScreen = y == ScreenHeight - 1;
+
+                    bool shouldNotPlaceDoorHere =
+                        ((isLeftEdgeOfScreen || isTopEdgeOfScreen) && currentRoomIndex == 0) ||
+                        ((isRightEdgeOfScreen|| isTopEdgeOfScreen) && currentRoomIndex == roomsOnFloorCount - 1) ||
+                        (isTopEdgeOfScreen && currentFloor == 0) ||
+                        (isBottomEdgeOfScreen && currentFloor == floorsCount - 1);
+
+                    _screen[y, x] = GraphicsChar[!shouldNotPlaceDoorHere ? "Door" : "Wall"];
+
+                }
                 else if (x == ScreenWidth - 1 || x == 0 || y == ScreenHeight - 1 || y == 0)
                     _screen[y, x] = GraphicsChar["Wall"];
                 else if (room.RoomContents[RoomExtension.ArrayToIndex(pos)].IsEmpty())
@@ -90,7 +121,8 @@ static class Graphics
         {
             foreach (char value in _screen)
             {
-                Console.Write($"{value}  ");
+                PrintColor(value, CharColors[value]);
+                Console.Write("  ");
                 index++;
 
                 if (index % ScreenWidth == 0)
@@ -103,5 +135,12 @@ static class Graphics
         }
         Console.WriteLine(InfoOneshot ?? InfoText);
         InfoOneshot = null;
+    }
+
+    private static void PrintColor(char c, ConsoleColor color)
+    {
+        Console.ForegroundColor = color;
+        Console.Write(c);
+        Console.ResetColor();
     }
 }

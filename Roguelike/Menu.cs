@@ -2,7 +2,7 @@
 
 public static class Menu
 {
-    public static MenuTabs CurrentTab = MenuTabs.Map;
+    public static MenuTabs CurrentTab = MenuTabs.Inventory;
 
     public static void Input(ConsoleKeyInfo keyInfo)
     {
@@ -62,13 +62,19 @@ public static class Inventory
 {
     public static List<InventoryItem> Contents = new List<InventoryItem>();
     private static int _pointer = 0;
+
+    public static int PotionHealing = 5;
+    public static float DaggerDmgMod = 2.0f;
+    
+    
     public static void UseAtPointer()
     {
         if(Contents.Count < 1)
             return;
-        Contents[_pointer].Use();
-        Contents.RemoveAt(_pointer);
-        Graphics.InfoOneshot = "Item used!";
+        if (Contents[_pointer].Use())
+            Contents.RemoveAt(_pointer);
+        if (_pointer >= Contents.Count)
+            _pointer--;
     }
 
     public static void AddItem(Item item)
@@ -106,20 +112,34 @@ public class InventoryItem(ConsumableType type = ConsumableType.Potion)
 {
     public ConsumableType Type = type;
 
-    public void Use()
+    public bool Use()
     {
         if (Type == ConsumableType.Potion)
         {
-            Player.ChangeHealth(5);
+            if (Player.Char.Health == Player.Char.MaxHealth)
+            {
+                Graphics.InfoOneshot = "Health already full!";
+                return false;
+            }
+            Player.ChangeHealth(Inventory.PotionHealing);
+            Graphics.InfoOneshot = "Potion used! Restored 5 hp";
         }
         else if (Type == ConsumableType.Shield)
         {
-            Player.Invulnerable = true;
+            Player.InvulnerableTurns++;
+            Graphics.InfoOneshot = "Shield used! One extra attack will be negated";
         }
         else if (Type == ConsumableType.Dagger)
         {
-            // throw dagger
+            if (Player.Throwing)
+            {
+                Graphics.InfoOneshot = "Dagger already Equipped!";
+                return false;
+            }
+            Player.Throwing = true;
+            Graphics.InfoOneshot = "Dagger equipped! Move to throw it";
         }
+        return true;
     }
 }
 public enum ConsumableType

@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Roguelike;
 
@@ -30,10 +31,10 @@ public static class Gameplay
                 if(keyInfo.Key is not ConsoleKey.Spacebar)
                     Menu.Input(keyInfo);
                 else
-                    ChangeGameState(GameState.Info);
+                    ChangeGameState(GameState.PlayerAction);
                 break;
             
-            case GameState.Info:
+            case GameState.Info: // temp disabled
                 if (keyInfo.Key == ConsoleKey.Spacebar)
                     ChangeGameState(GameState.PlayerAction);
                 break;
@@ -45,7 +46,10 @@ public static class Gameplay
     {
         CurrentGameState = newGameState;
         if (newGameState == GameState.PlayerAction)
-            Graphics.InfoText = "Player Action | Use WASD to move, Space to Interact or I to open inventory";
+            if(Player.Throwing)
+                Graphics.InfoText = "Player Action | Throwing a dagger! Use WASD to throw, Space to Interact or I to open inventory";
+            else
+                Graphics.InfoText = "Player Action | Use WASD to move, Space to Interact or I to open inventory";
         if (newGameState == GameState.MenuActions)
                 Graphics.InfoText = "Menu | Use WASD to navigate the menu, use with Enter and exit with Space";
         if (newGameState == GameState.Info)
@@ -56,6 +60,11 @@ public static class Gameplay
     {
         if (CurrentDungeon.CurrentRoom != null)
         {
+            if (Player.Throwing)
+            {
+                ThrowDagger(key);
+                return;
+            }
             // Try Move
             int index = RoomExtension.ArrayToIndex(Player.Char.Position);
             int[] playerPos = Player.Char.Position;
@@ -103,6 +112,67 @@ public static class Gameplay
         }
     }
 
+    private static void ThrowDagger(ConsoleKey key)
+    {
+        int index = RoomExtension.ArrayToIndex(Player.Char.Position);
+        
+        int targetCellIndex;
+        int[] targetCellPos = { Player.Char.Position[0], Player.Char.Position[1] };
+        int targetCellContent = 0;
+        switch (key)
+        {
+            case ConsoleKey.A:
+                do
+                {
+                    targetCellPos = [targetCellPos[0], targetCellPos[1] - 1];
+                    targetCellIndex = RoomExtension.ArrayToIndex(targetCellPos);
+                    targetCellContent = HasEnemy(targetCellIndex);
+                } while (targetCellContent == 0);
+                break;
+                
+            case ConsoleKey.D:
+                do
+                {
+                    targetCellPos = [targetCellPos[0], targetCellPos[1] + 1];
+                    targetCellIndex = RoomExtension.ArrayToIndex(targetCellPos);
+                    targetCellContent = HasEnemy(targetCellIndex);
+                } while (targetCellContent == 0);
+                break;
+            case ConsoleKey.W:
+                do
+                {
+                    targetCellPos = [targetCellPos[0] - 1, targetCellPos[1]];
+                    targetCellIndex = RoomExtension.ArrayToIndex(targetCellPos);
+                    targetCellContent = HasEnemy(targetCellIndex);
+                } while (targetCellContent == 0);
+                break;
+                
+            case ConsoleKey.S:
+                do
+                {
+                    targetCellPos = [targetCellPos[0] + 1, targetCellPos[1]];
+                    targetCellIndex = RoomExtension.ArrayToIndex(targetCellPos);
+                    targetCellContent = HasEnemy(targetCellIndex);
+                } while (targetCellContent == 0);
+                break;
+            
+            default:
+                return;
+        }
+        
+        if (targetCellContent == -1)
+        {
+            Graphics.InfoOneshot = "Dagger Missed";
+        }
+        else
+        {
+            CurrentDungeon.CurrentRoom.RoomContents[targetCellIndex].CellCharacter.TakeDamage(
+                (int)(Player.Char.Damage * Inventory.DaggerDmgMod));
+        }
+
+        Player.Throwing = false;
+    }
+
     private static void PlayerInteractInput()
     {
         if (CurrentDungeon.CurrentRoom != null)
@@ -145,13 +215,12 @@ public static class Gameplay
     private static int HasEnemy(int cellIndex) // -1 - out of bounds, 0 - no enemy, 1 - enemy
     {
         if(CurrentDungeon.CurrentRoom != null && CurrentDungeon.CurrentRoom.RoomContents.ContainsKey(cellIndex))
+        {
             if (CurrentDungeon.CurrentRoom.RoomContents[cellIndex].CellCharacter == null)
                 return 0;
-            else
-            {
-                AttackEnemyMelee(cellIndex);
-                return 1;
-            }
+            AttackEnemyMelee(cellIndex);
+            return 1;
+        }
         return -1;
     }
 
@@ -159,9 +228,10 @@ public static class Gameplay
     {
         if(CurrentDungeon.CurrentRoom.RoomContents[cellIndex].CellCharacter != null)
         {
-            CurrentDungeon.CurrentRoom.RemoveCharacterAt(cellIndex);
-            Graphics.InfoOneshot = "Enemy defeated! -2hp";
-            Player.ChangeHealth(-2);
+            Character enemy = CurrentDungeon.CurrentRoom.RoomContents[cellIndex].CellCharacter;
+            enemy.TakeDamage(Player.Char.Damage);
+            Graphics.InfoOneshot = "Enemy attacked!";
+            Player.ChangeHealth(-enemy.Damage);
         }
     }
 }

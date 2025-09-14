@@ -61,7 +61,7 @@ public class Room
 {
     public Dictionary<int, Cell> RoomContents = new Dictionary<int, Cell>(); 
     public List<Character> Enemies = new List<Character>();
-    public Room(bool lever = false, int enemies = 5, int items = 1)
+    public Room(bool lever = false, int enemies = 5, int items = 0)
     {
         RegenerateRoom(lever, enemies, items);
     }
@@ -106,7 +106,7 @@ public class Room
             RoomContents.Add(RoomExtension.ArrayToIndex([j, i]), new Cell(j, i));
     }
 
-    public void RegenerateRoom(bool lever = false, int enemies = 5, int items = 1) // default values for rooms
+    public void RegenerateRoom(bool lever = false, int enemies = 5, int items = 0) // default values for rooms
     {
         RoomContents.Clear();
         CreateEmptyRoom();
@@ -114,7 +114,10 @@ public class Room
         for(int i  = 0; i < enemies; i++)
             AddCharacter(new Character(RandomFreePosition(), false, NpcStates.Idle));
         for(int i  = 0; i < items; i++)
-            AddItem(new Item(RandomFreePosition(), ItemType.InvenoryItem));
+        {
+            ConsumableType consType = (ConsumableType)new Random().Next(0, Enum.GetNames(typeof(ConsumableType)).Length);
+            AddItem(new Item(RandomFreePosition(), ItemType.InvenoryItem, consType));
+        }
         if(lever)
             AddItem(new Item(RandomFreePosition(), ItemType.Lever));
     }
@@ -140,7 +143,7 @@ public class Dungeon
     private int floors = 4;
     public Room[][] DungeonRooms; // [floor][room]
     public Room CurrentRoom;
-    public int[] RoomPos;
+    public int[] RoomPos; // [floor, room]
     public int FloorAccess;
 
     // Constructor creates Dungeon with pyramid layout top-to-bottom
@@ -175,9 +178,13 @@ public class Dungeon
             case Direction.Up:
             {
                 // check if on a top floor, if in corner rooms and if has access 
+                if (FloorAccess >= RoomPos[0])
+                {
+                    Graphics.InfoOneshot = "Door is locked! Find a lever on this floor to open it";
+                    break;
+                }
                 if (RoomPos[0] != 0 &&
-                    (RoomPos[1] != 0 && RoomPos[1] != DungeonRooms[RoomPos[0]].Length - 1) &&
-                    FloorAccess < RoomPos[0])
+                    (RoomPos[1] != 0 && RoomPos[1] != DungeonRooms[RoomPos[0]].Length - 1))
                 {
                     RoomPos[0]--;
                     RoomPos[1]--;
@@ -218,6 +225,7 @@ public class Dungeon
                 break;
             }
         }
+
         return false;
     }
 

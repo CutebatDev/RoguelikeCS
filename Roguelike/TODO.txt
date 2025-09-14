@@ -23,16 +23,24 @@ Map       : draws map of the dungeon that shows character, lever
 .lenght-1
 
 TODO:
-
-Colors!!
-AttackEnemyMelee() @Gameplay.cs
-make opening inventory a function maybe (?)
-Info and status as text system
-Block corner room exits visually
-Generate random item
-EXP and levels !
-Dagger consumable
+    MUST:
 Enemies higher in dungeon are stronger
-Reasons to engage in combat
 How to finish a game?
+Enemy follow AI
+Player Death
 
+    GTH:
+EXP and levels !
+Equipable armor and weapon, that drop from enemies
+Character menu tab
+Save system
+
+    KNOWN BUGS:
+Sometimes player spawns on top of enemy
+-save center and all entrances as nono taken in RandomFreePosition()
+
+Enemy check in Gameplay attacks enemies, making dagger
+    deal extra attack
+-move attackEnemy to different place
+
+    
