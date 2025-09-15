@@ -40,6 +40,10 @@ public class Item(int[] position, ItemType type, ConsumableType? consumableType 
             {
                 if(cDungeon.CurrentRoom.Enemies.Count == 0)
                 {
+                    if (cDungeon.RoomPos[0] == 0)
+                    {
+                        Player.GameOver = true;
+                    }
                     if (cDungeon.FloorAccess >= cDungeon.RoomPos[0])
                     {
                         cDungeon.FloorAccess = cDungeon.RoomPos[0] - 1;
@@ -57,7 +61,7 @@ public class Item(int[] position, ItemType type, ConsumableType? consumableType 
 }
 
 public class Character(int[] position, bool isPlayer = false, NpcStates state = NpcStates.Idle,
-    int maxHealth = 10, int health = 10, int damage = 2, int hitRate = 5, int defence = 0)
+    int maxHealth = 10, int health = 10, int damage = 2, int enemyLevel = 1)
 {
     public int[] Position {get; set;} = position;
     
@@ -67,6 +71,8 @@ public class Character(int[] position, bool isPlayer = false, NpcStates state = 
     public bool IsPlayer { get; private set; } = isPlayer;
     public NpcStates State {get; private set;} = state;
 
+    public int EnemyLevel = enemyLevel;
+    
     public void TakeDamage(int dmg)
     {
         Health -= dmg;
@@ -86,6 +92,7 @@ public class Character(int[] position, bool isPlayer = false, NpcStates state = 
                 (ConsumableType)new Random().Next(0, Enum.GetNames(typeof(ConsumableType)).Length);
             currentRoom.AddItem(new Item(Position, ItemType.InvenoryItem, consType));
         }
+        Player.AddExp(EnemyLevel);
     }
 
 }

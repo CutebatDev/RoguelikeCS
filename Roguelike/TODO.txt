@@ -24,16 +24,14 @@ Map       : draws map of the dungeon that shows character, lever
 
 TODO:
     MUST:
-Enemies higher in dungeon are stronger
-How to finish a game?
 Enemy follow AI
-Player Death
 
-    GTH:
+    GoodToHave:
 EXP and levels !
 Equipable armor and weapon, that drop from enemies
 Character menu tab
 Save system
+Colored Healthbar
 
     KNOWN BUGS:
 Sometimes player spawns on top of enemy

@@ -7,15 +7,20 @@ public enum GameState
 {
     PlayerAction,   // players turn to move/attack
     MenuActions,    // all controls are used to navigate menus
-    Info            // all controls are blocked, information being shown.
+    Info,            // all controls are blocked, information being shown.
+    GameOver
 }
 
 public static class Gameplay
 {
     public static GameState CurrentGameState = GameState.Info;
-    public static Dungeon? CurrentDungeon = null;
+    public static Dungeon CurrentDungeon;
+    public static bool GameWon = false;
+    
     public static void Input(ConsoleKeyInfo keyInfo)
     {
+        if(Player.GameOver)
+            ChangeGameState(GameState.GameOver);
         switch (CurrentGameState)
         {
             case GameState.PlayerAction:
@@ -38,6 +43,10 @@ public static class Gameplay
                 if (keyInfo.Key == ConsoleKey.Spacebar)
                     ChangeGameState(GameState.PlayerAction);
                 break;
+            case GameState.GameOver:
+            {
+                break;
+            }
         }
         
     }
@@ -54,6 +63,11 @@ public static class Gameplay
                 Graphics.InfoText = "Menu | Use WASD to navigate the menu, use with Enter and exit with Space";
         if (newGameState == GameState.Info)
             Graphics.InfoText = "Info | Press Space to continue playing";
+        if(newGameState == GameState.GameOver)
+            if(CurrentDungeon.RoomPos[0] == 0 && Player.Char.Health > 0)
+                Graphics.InfoText = " | Victory! | ";
+            else
+                Graphics.InfoText = " | You are dead | ";
     }
     
     private static void PlayerDirectionalInput(ConsoleKey key)
@@ -230,7 +244,6 @@ public static class Gameplay
         {
             Character enemy = CurrentDungeon.CurrentRoom.RoomContents[cellIndex].CellCharacter;
             enemy.TakeDamage(Player.Char.Damage);
-            Graphics.InfoOneshot = "Enemy attacked!";
             Player.ChangeHealth(-enemy.Damage);
         }
     }

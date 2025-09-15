@@ -61,9 +61,9 @@ public class Room
 {
     public Dictionary<int, Cell> RoomContents = new Dictionary<int, Cell>(); 
     public List<Character> Enemies = new List<Character>();
-    public Room(bool lever = false, int enemies = 5, int items = 0)
+    public Room(bool lever = false, int enemies = 5, int enemyLevel = 1, int items = 0)
     {
-        RegenerateRoom(lever, enemies, items);
+        RegenerateRoom(lever, enemies, enemyLevel, items);
     }
 
     public void AddItem(Item addition)
@@ -82,16 +82,12 @@ public class Room
     public void RemoveCharacterAt(int[] pos)
     {
         int index = RoomExtension.ArrayToIndex(pos);
-        
-        var cellCharacter = RoomContents[index].CellCharacter;
-        if (cellCharacter != null && !cellCharacter.IsPlayer)
-            Enemies.Remove(RoomContents[index].CellCharacter);
-        
-        RoomContents[index].CellCharacter = null;
+        RemoveCharacterAt(index);
     }
     public void RemoveCharacterAt(int index)
     {
         var cellCharacter = RoomContents[index].CellCharacter;
+        
         if (cellCharacter != null && !cellCharacter.IsPlayer)
             Enemies.Remove(RoomContents[index].CellCharacter);
         
@@ -106,13 +102,17 @@ public class Room
             RoomContents.Add(RoomExtension.ArrayToIndex([j, i]), new Cell(j, i));
     }
 
-    public void RegenerateRoom(bool lever = false, int enemies = 5, int items = 0) // default values for rooms
+    public void RegenerateRoom(bool lever = false, int enemies = 5, int enemyLevel = 1, int items = 0) // default values for rooms
     {
         RoomContents.Clear();
         CreateEmptyRoom();
         
-        for(int i  = 0; i < enemies; i++)
-            AddCharacter(new Character(RandomFreePosition(), false, NpcStates.Idle));
+        for(int i  = 0; i < enemies; i++)// CHANGE TO NOT HARDCODED!
+        {
+            int health = 6 + (4 * enemyLevel); // 10 on lowest, and then 14, 18, 22...
+            int damage = 1 + enemyLevel; // 2, 3, 4, 5, 6...
+            AddCharacter(new Character(RandomFreePosition(), false, NpcStates.Idle, health, health, damage, enemyLevel));
+        }
         for(int i  = 0; i < items; i++)
         {
             ConsumableType consType = (ConsumableType)new Random().Next(0, Enum.GetNames(typeof(ConsumableType)).Length);
@@ -140,28 +140,32 @@ public class Room
 
 public class Dungeon
 {
-    private int floors = 4;
+    private int floors = 4; // min 2
     public Room[][] DungeonRooms; // [floor][room]
     public Room CurrentRoom;
     public int[] RoomPos; // [floor, room]
     public int FloorAccess;
+    private int maxEnemiesPerFloor = 5; // min 1
 
     // Constructor creates Dungeon with pyramid layout top-to-bottom
     public Dungeon()
     {
         // first, it creates a dungeon in height
         DungeonRooms = new Room[floors][];
-        for (int i = 1; i <= floors; i++)
+        for (int floor = 1; floor <= floors; floor++)
         {
             // each floor has (2*Number of Floor -1) (counting floors down) rooms (this creates pyramid)
-            DungeonRooms[i-1] = new Room[(i * 2) - 1]; 
-            int leverRoom = new Random().Next(0, DungeonRooms[i - 1].Length);
-            for (int j = 0; j < DungeonRooms[i-1].Length; j++)
+            DungeonRooms[floor-1] = new Room[(floor * 2) - 1]; 
+            int leverRoom = new Random().Next(0, DungeonRooms[floor - 1].Length);
+            for (int room = 0; room < DungeonRooms[floor-1].Length; room++)
             {
-                if(j == leverRoom)
-                    DungeonRooms[i-1][j] = new Room(true);
+                if(room == leverRoom)
+                    DungeonRooms[floor-1][room] = new Room(true);
                 else
-                    DungeonRooms[i-1][j] = new Room();
+                {
+                    int numOfEnemies = new Random().Next(1, maxEnemiesPerFloor + 1);
+                    DungeonRooms[floor-1][room] = new Room(false, numOfEnemies, floors - floor);
+                }
             }
         }
 
