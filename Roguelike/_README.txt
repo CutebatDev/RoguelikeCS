@@ -24,21 +24,19 @@ Map       : draws map of the dungeon that shows character, lever
 
 TODO:
     MUST:
-Enemy follow AI
 
     GoodToHave:
-EXP and levels !
 Equipable armor and weapon, that drop from enemies
 Character menu tab
 Save system
 Colored Healthbar
+Tooltips for items
 
     KNOWN BUGS:
 Sometimes player spawns on top of enemy
 -save center and all entrances as nono taken in RandomFreePosition()
 
 Enemy check in Gameplay attacks enemies, making dagger
-    deal extra attack
+deal extra attack
 -move attackEnemy to different place
-
     

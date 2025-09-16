@@ -94,6 +94,17 @@ public class Room
         RoomContents[index].CellCharacter = null;
     }
 
+    public void MoveCharacter(Character moveTarget, int[] newPos)
+    {
+        int index = RoomExtension.ArrayToIndex(moveTarget.Position);
+        RoomContents[index].CellCharacter = null;
+        
+        index = RoomExtension.ArrayToIndex(newPos);
+        RoomContents[index].AddCharacter(moveTarget);
+        
+        moveTarget.Position = newPos;
+    }
+
     private void CreateEmptyRoom()
     {
         // instantiate all cells
@@ -160,7 +171,7 @@ public class Dungeon
             for (int room = 0; room < DungeonRooms[floor-1].Length; room++)
             {
                 if(room == leverRoom)
-                    DungeonRooms[floor-1][room] = new Room(true);
+                    DungeonRooms[floor-1][room] = new Room(true, maxEnemiesPerFloor, floors - floor);
                 else
                 {
                     int numOfEnemies = new Random().Next(1, maxEnemiesPerFloor + 1);
@@ -235,6 +246,10 @@ public class Dungeon
 
     private void ChangeCurrentRoom(int floor, int room)
     {
+        foreach (var enemy in CurrentRoom.Enemies)
+        {
+            enemy.State = NpcStates.Idle;
+        }
         CurrentRoom.RemoveCharacterAt(Player.Char.Position);
         CurrentRoom = DungeonRooms[floor][room];
     }

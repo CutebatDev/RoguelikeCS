@@ -69,6 +69,8 @@ public static class Inventory
     
     public static void UseAtPointer()
     {
+        if(_pointer < 0 || _pointer >= Contents.Count)
+            _pointer = 0;
         if(Contents.Count < 1)
             return;
         if (Contents[_pointer].Use())

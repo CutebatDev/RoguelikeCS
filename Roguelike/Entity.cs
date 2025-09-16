@@ -69,7 +69,7 @@ public class Character(int[] position, bool isPlayer = false, NpcStates state = 
     public int Health { get; set; } = health;
     public int Damage { get; set; } = damage;
     public bool IsPlayer { get; private set; } = isPlayer;
-    public NpcStates State {get; private set;} = state;
+    public NpcStates State {get; set;} = state;
 
     public int EnemyLevel = enemyLevel;
     
@@ -93,6 +93,53 @@ public class Character(int[] position, bool isPlayer = false, NpcStates state = 
             currentRoom.AddItem(new Item(Position, ItemType.InvenoryItem, consType));
         }
         Player.AddExp(EnemyLevel);
+    }
+
+    public void EnemyAction()
+    {
+        if (State == NpcStates.Follow)
+        {
+            int[] playerPos = Player.Char.Position;
+            if (!IsPlayerClose())
+            {
+                int[] movePos = { Position[0], Position[1] };
+                // move towards player on Y axis
+                if (playerPos[0] > Position[0])
+                    movePos[0] = Position[0] + 1;
+                else if (playerPos[0] < Position[0])
+                    movePos[0] = Position[0] - 1;
+                
+                // move towards player on X axis
+                if (playerPos[1] > Position[1])
+                    movePos[1] = Position[1] + 1;
+                else if (playerPos[1] < Position[1])
+                    movePos[1] = Position[1] - 1;
+                
+                // move if Cell is not taken
+                if (Gameplay.CurrentDungeon.CurrentRoom.RoomContents[RoomExtension.ArrayToIndex(movePos)]
+                        .CellCharacter == null)
+                {
+                    Gameplay.CurrentDungeon.CurrentRoom.MoveCharacter(this, movePos);
+                }
+            }
+            else
+            {
+                Graphics.InfoOneshot = "You were attacked!";
+                Player.ChangeHealth(-Damage);
+            }
+        }
+        else if (State == NpcStates.Idle)
+        {
+            if(IsPlayerClose())
+                State = NpcStates.Follow;
+        }
+    }
+
+    private bool IsPlayerClose()
+    {
+        int[] playerPos = Player.Char.Position;
+        int[] distance = { Math.Abs(Position[0] - playerPos[0]), Math.Abs(Position[1] - playerPos[1])};
+        return !(distance[0] > 1 || distance[1] > 1);
     }
 
 }

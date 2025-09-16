@@ -15,6 +15,7 @@ public static class Gameplay
 {
     public static GameState CurrentGameState = GameState.Info;
     public static Dungeon CurrentDungeon;
+    public static bool isEnemyTurn = false;
     public static bool GameWon = false;
     
     public static void Input(ConsoleKeyInfo keyInfo)
@@ -25,11 +26,17 @@ public static class Gameplay
         {
             case GameState.PlayerAction:
                 if(keyInfo.Key is ConsoleKey.W or ConsoleKey.A or ConsoleKey.S or ConsoleKey.D)
+                {
                     PlayerDirectionalInput(keyInfo.Key);
+                    isEnemyTurn = true;
+                }
                 if (keyInfo.Key is ConsoleKey.I)
                     ChangeGameState(GameState.MenuActions);
                 if (keyInfo.Key is ConsoleKey.Spacebar)
+                {
                     PlayerInteractInput();
+                    isEnemyTurn = true;
+                }
                 break;
             
             case GameState.MenuActions:
@@ -48,7 +55,21 @@ public static class Gameplay
                 break;
             }
         }
-        
+
+        EnemyTurn();
+
+    }
+
+    private static void EnemyTurn()
+    {
+        if (isEnemyTurn)
+        {
+            foreach (var enemy in CurrentDungeon.CurrentRoom.Enemies)
+            {
+                enemy.EnemyAction();
+            }
+            isEnemyTurn = false;
+        }
     }
 
     private static void ChangeGameState(GameState newGameState)
@@ -244,7 +265,6 @@ public static class Gameplay
         {
             Character enemy = CurrentDungeon.CurrentRoom.RoomContents[cellIndex].CellCharacter;
             enemy.TakeDamage(Player.Char.Damage);
-            Player.ChangeHealth(-enemy.Damage);
         }
     }
 }
