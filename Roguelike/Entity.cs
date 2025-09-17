@@ -22,17 +22,17 @@ public class Item(int[] position, ItemType type, ConsumableType? consumableType 
     public int[] Position {get; private set;} = position;
     public ItemType Type {get; private set;} = type;
     public ConsumableType? Consumable {get; private set;} = consumableType;
-
     
     public void Interact()
     {
         Dungeon cDungeon = Gameplay.CurrentDungeon;
+        int playerPosIndex = RoomExtension.ArrayToIndex(Player.Char.Position);
         switch (Type)
         {
             case ItemType.InvenoryItem:
             {
-                Inventory.AddItem(cDungeon.CurrentRoom.RoomContents[RoomExtension.ArrayToIndex(Player.Char.Position)].CellItem);
-                cDungeon.CurrentRoom.RoomContents[RoomExtension.ArrayToIndex(Player.Char.Position)].CellItem = null;
+                Inventory.AddItem(cDungeon.CurrentRoom.RoomContents[playerPosIndex].CellItem);
+                cDungeon.CurrentRoom.RoomContents[playerPosIndex].CellItem = null;
                 Graphics.InfoOneshot = "Item picked up!";
                 break;
             }

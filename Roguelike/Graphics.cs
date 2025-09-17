@@ -34,6 +34,7 @@ static class Graphics
     
     private static char[,] _screen = new char[ScreenHeight, ScreenWidth];
     
+    // Initiates _screen[,] array with ScreenWith and ScreenHeight parameters
     public static void InitScreen()
     {
         // Fill contents with empty spaces
@@ -46,6 +47,7 @@ static class Graphics
         }
     }
 
+    // Goes through contents of current room, and populates every "pixel" of the screen with walls, characters, items, etc
     public static void UpdateScreen(Room room)
     {
         Dungeon dungeon = Gameplay.CurrentDungeon;
@@ -101,6 +103,7 @@ static class Graphics
         }
     }
     
+    // Runs through contents of _screen[,] , and prints them on screen, aswell as player status and info lines
     public static void DrawScreen()
     {
         Console.Clear();
@@ -138,7 +141,6 @@ static class Graphics
         Console.WriteLine(InfoOneshot ?? InfoText);
         InfoOneshot = null;
     }
-
     private static void PrintColor(char c, ConsoleColor color)
     {
         Console.ForegroundColor = color;

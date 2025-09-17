@@ -8,6 +8,7 @@ public enum Direction
     Right
 }
 
+// Each room is made of those, each cell can contain one Character and one Item
 public class Cell
 {
     public int[] Position = new int[2];
@@ -59,7 +60,10 @@ public class Cell
 
 public class Room
 {
+    // int - unique cell index within the room, calculated in RoomExtention based on its position
     public Dictionary<int, Cell> RoomContents = new Dictionary<int, Cell>(); 
+    
+    // list of all alive enemies in the room
     public List<Character> Enemies = new List<Character>();
     public Room(bool lever = false, int enemies = 5, int enemyLevel = 1, int items = 0)
     {
@@ -118,7 +122,7 @@ public class Room
         RoomContents.Clear();
         CreateEmptyRoom();
         
-        for(int i  = 0; i < enemies; i++)// CHANGE TO NOT HARDCODED!
+        for(int i  = 0; i < enemies; i++)
         {
             int health = 6 + (4 * enemyLevel); // 10 on lowest, and then 14, 18, 22...
             int damage = 1 + enemyLevel; // 2, 3, 4, 5, 6...
@@ -155,7 +159,7 @@ public class Dungeon
     public Room[][] DungeonRooms; // [floor][room]
     public Room CurrentRoom;
     public int[] RoomPos; // [floor, room]
-    public int FloorAccess;
+    public int FloorAccess; 
     private int maxEnemiesPerFloor = 5; // min 1
 
     // Constructor creates Dungeon with pyramid layout top-to-bottom

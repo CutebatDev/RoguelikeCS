@@ -30,7 +30,7 @@ public static class Gameplay
                     PlayerDirectionalInput(keyInfo.Key);
                     isEnemyTurn = true;
                 }
-                if (keyInfo.Key is ConsoleKey.I)
+                if (keyInfo.Key is ConsoleKey.I) // Open menus
                     ChangeGameState(GameState.MenuActions);
                 if (keyInfo.Key is ConsoleKey.Spacebar)
                 {
@@ -146,7 +146,46 @@ public static class Gameplay
             CurrentDungeon.CurrentRoom.AddCharacter(Player.Char);
         }
     }
-
+    
+    private static void PlayerInteractInput()
+    {
+        if (CurrentDungeon.CurrentRoom != null)
+        {
+            int index = RoomExtension.ArrayToIndex(Player.Char.Position);
+            if (CurrentDungeon.CurrentRoom.RoomContents[index].CellItem != null)
+                CurrentDungeon.CurrentRoom.RoomContents[index].CellItem.Interact();
+            else
+            {
+                if (CurrentDungeon.CurrentRoom.RoomContents[index].isExit)
+                {
+                    int[] pPos = Player.Char.Position;
+                    if(pPos[0] == 0){
+                        if (CurrentDungeon.Move(Direction.Up))
+                            pPos[0] = Graphics.ScreenHeight-3;
+                    }
+                    else if (pPos[0] == Graphics.ScreenHeight-3)
+                    {
+                        if (CurrentDungeon.Move(Direction.Down))
+                            pPos[0] = 0;
+                    }
+                    else if(pPos[1] == 0)
+                    {
+                        if (CurrentDungeon.Move(Direction.Left))
+                            pPos[1] = Graphics.ScreenWidth - 3;
+                    }
+                    else if (pPos[1] == Graphics.ScreenWidth-3)
+                    {
+                        if (CurrentDungeon.Move(Direction.Right))
+                            pPos[1] = 0;
+                    }
+                    
+                    Player.Char.Position = pPos;
+                    CurrentDungeon.CurrentRoom.AddCharacter(Player.Char);
+                }
+            }
+        }
+    }
+    
     private static void ThrowDagger(ConsoleKey key)
     {
         int index = RoomExtension.ArrayToIndex(Player.Char.Position);
@@ -208,45 +247,6 @@ public static class Gameplay
         Player.Throwing = false;
     }
 
-    private static void PlayerInteractInput()
-    {
-        if (CurrentDungeon.CurrentRoom != null)
-        {
-            int index = RoomExtension.ArrayToIndex(Player.Char.Position);
-            if (CurrentDungeon.CurrentRoom.RoomContents[index].CellItem != null)
-                CurrentDungeon.CurrentRoom.RoomContents[index].CellItem.Interact();
-            else
-            {
-                if (CurrentDungeon.CurrentRoom.RoomContents[index].isExit)
-                {
-                    int[] pPos = Player.Char.Position;
-                    if(pPos[0] == 0){
-                        if (CurrentDungeon.Move(Direction.Up))
-                            pPos[0] = Graphics.ScreenHeight-3;
-                    }
-                    else if (pPos[0] == Graphics.ScreenHeight-3)
-                    {
-                        if (CurrentDungeon.Move(Direction.Down))
-                            pPos[0] = 0;
-                    }
-                    else if(pPos[1] == 0)
-                    {
-                        if (CurrentDungeon.Move(Direction.Left))
-                            pPos[1] = Graphics.ScreenWidth - 3;
-                    }
-                    else if (pPos[1] == Graphics.ScreenWidth-3)
-                    {
-                        if (CurrentDungeon.Move(Direction.Right))
-                            pPos[1] = 0;
-                    }
-                    
-                    Player.Char.Position = pPos;
-                    CurrentDungeon.CurrentRoom.AddCharacter(Player.Char);
-                }
-            }
-        }
-    }
-    
     private static int HasEnemy(int cellIndex) // -1 - out of bounds, 0 - no enemy, 1 - enemy
     {
         if(CurrentDungeon.CurrentRoom != null && CurrentDungeon.CurrentRoom.RoomContents.ContainsKey(cellIndex))

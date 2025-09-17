@@ -37,6 +37,6 @@ Sometimes player spawns on top of enemy
 -save center and all entrances as nono taken in RandomFreePosition()
 
 Enemy check in Gameplay attacks enemies, making dagger
-deal extra attack
+deal more damage than intended
 -move attackEnemy to different place
     
