@@ -105,6 +105,7 @@ static class Graphics
     {
         Console.Clear();
         Console.Write("Health :");
+        Console.ForegroundColor = ConsoleColor.Green;
         Console.Write("|");
         for (int i = 0; i < Player.Char.MaxHealth; i++)
         {
@@ -114,6 +115,7 @@ static class Graphics
                 Console.Write(" ");
         }
         Console.WriteLine("|");
+        Console.ResetColor();
         int index = 0;
 
 
